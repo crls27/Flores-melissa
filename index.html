@@ -3,408 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti, Meli 💛</title>
-    <!-- Fuentes tipográficas elegantes -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
+    <title>Para Meli ✨</title>
     <style>
-        /* === ESTILOS GENERALES === */
+        :root {
+            --bg-soft: #f4fafe;
+            --text-color: #333;
+        }
+
         body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f1ea; /* Fondo suave inicial */
-            overflow: hidden; /* Ocultamos el scroll al principio */
-            transition: background-color 2s ease;
-            scroll-behavior: smooth;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-soft);
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            overflow-y: hidden; /* Se desbloquea en la fase 2 */
+            transition: background-color 1s ease;
         }
 
-        /* === PANTALLA 1: EL JARDÍN MÁGICO (CLICS) === */
-        #pantalla-interactiva {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            cursor: pointer;
+        /* FASE 1: Click y Jardín */
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            /* Evitar selección de texto */
-            user-select: none; 
-        }
-
-        #mensaje-toque {
-            font-size: 22px;
-            color: #666;
             pointer-events: none;
-            transition: opacity 0.5s;
-            animation: pulseText 2s infinite;
-            padding: 20px;
         }
 
-        @keyframes pulseText {
-            0% { opacity: 0.5; transform: scale(1); }
+        #intro-text {
+            font-size: 1.5rem;
+            color: #557;
+            opacity: 0.8;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.5; transform: scale(1); }
         }
 
-        /* Las flores que aparecen con los clics */
-        .flor-clic {
+        .flower {
             position: absolute;
-            font-size: 50px;
+            font-size: 3rem;
             transform: translate(-50%, -50%) scale(0);
-            pointer-events: none;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.1));
-        }
-
-        /* La hortensia especial del clic 10 */
-        .hortensia-magica {
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            transform: translate(-50%, -50%) scale(0);
-            pointer-events: none;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 1);
-            animation: popInHortensia 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            z-index: 20;
-        }
-
-        @keyframes popIn {
-            to { transform: translate(-50%, -50%) scale(1); }
-        }
-        @keyframes popInHortensia {
-            0% { transform: translate(-50%, -50%) scale(0) rotate(-20deg); }
-            50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
-            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-        }
-
-        /* Efecto de destello de luz (Flash) */
-        #flash-luz {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: white;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 9999;
-            transition: opacity 0.8s ease-out;
-        }
-
-        /* Indicador de Scroll */
-        #scroll-indicador {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            color: #d4af37;
-            font-size: 18px;
-            font-weight: 600;
-            pointer-events: none;
-            transition: opacity 1s 1s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: bounce 2s infinite;
-        }
-        #scroll-indicador span { font-size: 30px; margin-top: 5px; }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
-            40% { transform: translateY(-20px) translateX(-50%); }
-            60% { transform: translateY(-10px) translateX(-50%); }
-        }
-
-        /* === LLUVIA DE PÉTALOS === */
-        #contenedor-petalos {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            animation: bloom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             pointer-events: none;
             z-index: 5;
-            overflow: hidden;
         }
 
-        .petalo {
-            position: absolute;
+        .hydrangea {
+            font-size: 8rem;
+            z-index: 6;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+
+        @keyframes bloom {
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Lluvia de pétalos */
+        .petal {
+            position: fixed;
             top: -10%;
             width: 15px;
             height: 15px;
-            border-radius: 50% 0 50% 0; /* Forma de pétalo */
-            opacity: 0.8;
-            animation: caer linear infinite;
+            background: #ffd700;
+            border-radius: 15px 0 15px 0;
+            pointer-events: none;
+            z-index: 4;
+            animation: fall linear infinite;
+        }
+        .petal.blue {
+            background: #87cefa;
         }
 
-        @keyframes caer {
-            0% { transform: translateY(0) rotate(0deg) translateX(0); }
-            50% { transform: translateY(55vh) rotate(180deg) translateX(50px); }
-            100% { transform: translateY(110vh) rotate(360deg) translateX(-50px); }
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+            }
         }
 
-        /* === SECCIONES DE SCROLL === */
-        .seccion-scroll {
-            min-height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        /* Flash de iluminación */
+        #flash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        /* FASE 2: Scroll */
+        #scroll-prompt {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
             text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-            z-index: 10;
-        }
-
-        .texto-revelar {
-            font-size: 28px;
-            color: #333;
+            font-size: 1.2rem;
+            color: #557;
+            z-index: 15;
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s ease-out;
-            max-width: 800px;
-        }
-        
-        .texto-revelar.visible {
-            opacity: 1;
-            transform: translateY(0);
+            transition: opacity 1s ease;
+            pointer-events: none;
+            animation: bounce 2s infinite;
         }
 
-        .texto-destacado {
-            font-family: 'Dancing Script', cursive;
-            color: #d4af37;
-            font-size: 45px;
-            margin-top: 15px;
-            display: block;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* === EL RAMO FINAL QUE SE ARMA === */
-        #ramo-contenedor {
+        #scroll-container {
+            height: 400vh; /* Espacio para scrollear */
+            display: none;
             position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 40px auto;
+            z-index: 1;
         }
 
-        .flor-ramo {
+        /* Ramo de flores */
+        #bouquet-wrapper {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .bouquet-flower {
             position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 2.5rem;
             opacity: 0;
-            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.3s ease, transform 0.5s ease;
         }
 
-        /* Posiciones iniciales esparcidas (antes del scroll) */
-        .f1 { top: -200px; left: -200px; transform: rotate(-45deg) scale(0.5); }
-        .f2 { top: -200px; right: -200px; transform: rotate(45deg) scale(0.5); }
-        .f3 { bottom: -200px; left: -200px; transform: rotate(-90deg) scale(0.5); }
-        .f4 { bottom: -200px; right: -200px; transform: rotate(90deg) scale(0.5); }
-        .f5 { top: -300px; left: 50%; transform: translateX(-50%) scale(0.5); }
-        .f-centro { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 5; width: 160px; height: 160px;}
-
-        /* Posiciones finales juntas (ramo armado) */
-        #ramo-contenedor.armado .flor-ramo { opacity: 1; }
-        #ramo-contenedor.armado .f1 { top: 20px; left: 20px; transform: rotate(-15deg) scale(1); }
-        #ramo-contenedor.armado .f2 { top: 20px; right: 20px; transform: rotate(15deg) scale(1); }
-        #ramo-contenedor.armado .f3 { bottom: 40px; left: 30px; transform: rotate(-30deg) scale(1); }
-        #ramo-contenedor.armado .f4 { bottom: 40px; right: 30px; transform: rotate(30deg) scale(1); }
-        #ramo-contenedor.armado .f5 { top: 0; left: 50%; transform: translateX(-50%) rotate(0deg) scale(1); z-index: 2; }
-        #ramo-contenedor.armado .f-centro { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px #FFD700; }
-
-        .mensaje-final {
-            font-size: 22px;
-            color: #444;
-            line-height: 1.6;
+        /* Textos del scroll */
+        .scroll-text {
+            position: fixed;
+            width: 80%;
+            left: 10%;
+            text-align: center;
+            font-size: 2rem;
+            color: #222;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.9);
         }
 
+        .final-text {
+            font-size: 2.2rem;
+            color: #b8860b;
+        }
+
+        .final-text b {
+            color: #ff4500;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Destello de luz -->
-    <div id="flash-luz"></div>
-    
-    <!-- Lluvia de pétalos -->
-    <div id="contenedor-petalos"></div>
+    <div id="flash"></div>
 
-    <!-- PANTALLA 1: EL JARDÍN MÁGICO -->
-    <div id="pantalla-interactiva">
-        <h2 id="mensaje-toque">Hola Meli... <br><br><small>Toca cualquier parte de la pantalla</small></h2>
-        <div id="scroll-indicador">
-            ¡La magia ha comenzado! <br> Desliza hacia abajo
-            <span>👇</span>
-        </div>
+    <div id="intro-screen">
+        <div id="intro-text">Toca cualquier parte de la pantalla ✨</div>
     </div>
 
-    <!-- PANTALLA 2: LO TÍPICO -->
-    <div class="seccion-scroll">
-        <div class="texto-revelar">
-            Todo el mundo regala esto hoy...<br>
-            <span style="font-size: 80px; margin-top: 20px; display: block;">🌻</span>
-        </div>
-    </div>
+    <div id="scroll-prompt">⬇ Desliza hacia abajo ⬇</div>
 
-    <!-- PANTALLA 3: LA EXCEPCIÓN -->
-    <div class="seccion-scroll">
-        <div class="texto-revelar">
-            <span class="texto-destacado" style="font-size: 60px;">Pero tú no eres todo el mundo.</span>
-        </div>
-    </div>
-
-    <!-- PANTALLA 4: EL RAMO Y EL MENSAJE FINAL -->
-    <div class="seccion-scroll" style="min-height: 120vh; justify-content: flex-start; padding-top: 10vh;">
-        <div class="texto-revelar mensaje-final">
-            No quería darte las típicas flores amarillas...
-        </div>
-
-        <div id="ramo-contenedor" class="texto-revelar">
-            <!-- Usamos la imagen de la hortensia varias veces para simular el ramo -->
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f1">
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f2">
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f3">
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f4">
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f5">
-            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f-centro">
-        </div>
-
-        <div class="texto-revelar mensaje-final" style="margin-top: 20px;">
-            quería darte <b style="color: #d4af37;">TUS</b> flores amarillas.<br>
-            <span class="texto-destacado">Un detalle solo para ti, Meli. 💛</span>
-        </div>
+    <div id="scroll-container">
+        <!-- Contenedor fijo para los textos y el ramo mientras se scrollea -->
+        <div id="bouquet-wrapper"></div>
+        <div id="text-1" class="scroll-text" style="top: 20%;">"Todo el mundo regala esto..."</div>
+        <div id="text-2" class="scroll-text" style="top: 40%;">"Pero tú no eres todo el mundo"</div>
+        <div id="text-3" class="scroll-text final-text" style="top: 60%;">"No quería darte las típicas flores amarillas, quería darte <b>tus</b> flores amarillas, un detalle solo para ti, Meli."</div>
     </div>
 
     <script>
-        // === LÓGICA DE CLICS (JARDÍN MÁGICO) ===
-        const pantallaInteractiva = document.getElementById('pantalla-interactiva');
-        const mensajeToque = document.getElementById('mensaje-toque');
-        const flashLuz = document.getElementById('flash-luz');
-        const scrollIndicador = document.getElementById('scroll-indicador');
-        const body = document.body;
+        let clickCount = 0;
+        let phase = 1;
+        const targetClicks = Math.floor(Math.random() * 6) + 10; // Entre 10 y 15
         
-        let contadorClics = 0;
-        const clicsNecesarios = 10; // Al décimo clic ocurre la magia
-        let magiaActivada = false;
+        // Elementos
+        const introText = document.getElementById('intro-text');
+        const flash = document.getElementById('flash');
+        const scrollPrompt = document.getElementById('scroll-prompt');
+        const scrollContainer = document.getElementById('scroll-container');
+        const bouquetWrapper = document.getElementById('bouquet-wrapper');
+        
+        const text1 = document.getElementById('text-1');
+        const text2 = document.getElementById('text-2');
+        const text3 = document.getElementById('text-3');
 
-        pantallaInteractiva.addEventListener('click', (e) => {
-            if (magiaActivada) return; // Si ya se activó la magia, no hace nada más
+        // FASE 1: Click en la pantalla
+        window.addEventListener('click', (e) => {
+            if (phase !== 1) return;
 
-            contadorClics++;
-            
-            // Ocultar texto inicial al primer clic
-            if(contadorClics === 1) {
-                mensajeToque.style.opacity = '0';
-            }
+            // Ocultar texto inicial al primer click
+            if (clickCount === 0) introText.style.opacity = 0;
 
-            if (contadorClics < clicsNecesarios) {
-                // Generar flores comunes (girasoles)
-                crearFlorComun(e.clientX, e.clientY);
-            } else {
-                // CLÍMAX: Generar la Hortensia
-                crearHortensia(e.clientX, e.clientY);
-                desatarMagia();
+            clickCount++;
+
+            // Crear flor amarilla normal
+            createFlower(e.clientX, e.clientY, '🌼', false);
+
+            if (clickCount === targetClicks) {
+                triggerMagic(e.clientX, e.clientY);
             }
         });
 
-        function crearFlorComun(x, y) {
-            const flor = document.createElement('div');
-            flor.classList.add('flor-clic');
-            flor.innerText = '🌻';
-            flor.style.left = x + 'px';
-            flor.style.top = y + 'px';
+        function createFlower(x, y, emoji, isHydrangea) {
+            const flower = document.createElement('div');
+            flower.className = 'flower' + (isHydrangea ? ' hydrangea' : '');
+            flower.innerText = emoji;
+            flower.style.left = x + 'px';
+            flower.style.top = y + 'px';
             
             // Rotación aleatoria para que se vea natural
-            const rotacion = Math.floor(Math.random() * 40) - 20; 
-            flor.style.transform = `translate(-50%, -50%) rotate(${rotacion}deg)`;
+            flower.style.transform = `translate(-50%, -50%) scale(0) rotate(${Math.random() * 360}deg)`;
             
-            pantallaInteractiva.appendChild(flor);
+            document.body.appendChild(flower);
         }
 
-        function crearHortensia(x, y) {
-            const hortensia = document.createElement('img');
-            hortensia.src = 'https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg';
-            hortensia.classList.add('hortensia-magica');
-            hortensia.style.left = x + 'px';
-            hortensia.style.top = y + 'px';
-            pantallaInteractiva.appendChild(hortensia);
+        function triggerMagic(x, y) {
+            phase = 2;
+            
+            // Flash de iluminación
+            flash.style.opacity = 1;
+            setTimeout(() => {
+                flash.style.opacity = 0;
+                document.body.style.backgroundColor = '#fffacd'; // Fondo se vuelve un amarillo muy suave
+            }, 500);
+
+            // Aparece la hortensia
+            createFlower(x, y, '🪻', true); // Emoji de hortensia/jacinto
+
+            // Lluvia de pétalos
+            startPetalRain();
+
+            // Preparar el scroll
+            setTimeout(() => {
+                scrollContainer.style.display = 'block';
+                document.body.style.overflowY = 'auto'; // Permitir scroll
+                scrollPrompt.style.opacity = 1;
+                prepareBouquet();
+            }, 2000);
         }
 
-        function desatarMagia() {
-            magiaActivada = true;
-
-            // 1. Efecto Flash de luz
-            flashLuz.style.opacity = '1';
-            setTimeout(() => { flashLuz.style.opacity = '0'; }, 300);
-
-            // 2. Cambiar fondo a uno más cálido e iluminado
-            body.style.backgroundColor = '#fff9e6';
-
-            // 3. Iniciar lluvia de pétalos
-            iniciarLluviaPetalos();
-
-            // 4. Habilitar el scroll y mostrar indicador
-            body.style.overflow = 'auto';
-            scrollIndicador.style.opacity = '1';
-        }
-
-        // === LÓGICA DE LA LLUVIA DE PÉTALOS ===
-        function iniciarLluviaPetalos() {
-            const contenedor = document.getElementById('contenedor-petalos');
-            const colores = ['#FFD700', '#FFC125', '#4169E1', '#6495ED']; // Amarillos y Azules
-
+        function startPetalRain() {
             setInterval(() => {
-                const petalo = document.createElement('div');
-                petalo.classList.add('petalo');
+                const petal = document.createElement('div');
+                petal.className = 'petal';
                 
-                // Color aleatorio (Amarillo o Azul de hortensia)
-                petalo.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
-                
-                // Posición horizontal aleatoria
-                petalo.style.left = Math.random() * 100 + 'vw';
-                
-                // Duración de caída aleatoria (entre 4 y 8 segundos)
-                petalo.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                
-                // Tamaño ligeramente aleatorio
-                const tamano = (Math.random() * 10 + 10) + 'px';
-                petalo.style.width = tamano;
-                petalo.style.height = tamano;
+                // 30% de probabilidad de ser azul (típico de hortensias)
+                if (Math.random() > 0.7) {
+                    petal.classList.add('blue');
+                }
 
-                contenedor.appendChild(petalo);
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                petal.style.opacity = Math.random() + 0.5;
+                
+                document.body.appendChild(petal);
 
-                // Eliminar el pétalo después de que cae para no saturar la memoria
-                setTimeout(() => { petalo.remove(); }, 8000);
-            }, 200); // Genera un pétalo nuevo cada 200 milisegundos
+                // Limpiar pétalos viejos
+                setTimeout(() => { petal.remove(); }, 5000);
+            }, 100); // Crea un pétalo cada 100ms
         }
 
-        // === LÓGICA DE SCROLL (REVELAR TEXTOS Y ARMAR RAMO) ===
-        const elementosRevelar = document.querySelectorAll('.texto-revelar');
-        const ramoContenedor = document.getElementById('ramo-contenedor');
+        // FASE 2: Armado del ramo por Scroll
+        const totalBouquetFlowers = 50;
+        const bouquetFlowers = [];
 
-        function verificarScroll() {
-            const triggerBottom = window.innerHeight * 0.85; // Se activa cuando el elemento llega al 85% de la pantalla
-
-            elementosRevelar.forEach(elemento => {
-                const elementoTop = elemento.getBoundingClientRect().top;
+        function prepareBouquet() {
+            // Pre-crear las flores del ramo ocultas
+            for (let i = 0; i < totalBouquetFlowers; i++) {
+                const f = document.createElement('div');
+                f.className = 'bouquet-flower';
+                f.innerText = '🌼';
                 
-                if(elementoTop < triggerBottom) {
-                    elemento.classList.add('visible');
-                    
-                    // Si el elemento es el contenedor del ramo, activamos su animación de ensamblaje
-                    if(elemento.id === 'ramo-contenedor') {
-                        elemento.classList.add('armado');
-                    }
+                // Distribución circular aleatoria
+                const angle = Math.random() * Math.PI * 2;
+                const radius = Math.sqrt(Math.random()) * 120; // Radio máx 120px
+                const x = 150 + Math.cos(angle) * radius;
+                const y = 150 + Math.sin(angle) * radius;
+                
+                f.style.left = x + 'px';
+                f.style.top = y + 'px';
+                f.style.transform = `scale(0.1) rotate(${Math.random() * 360}deg)`;
+                
+                bouquetWrapper.appendChild(f);
+                bouquetFlowers.push(f);
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            if (phase !== 2) return;
+            
+            // Ocultar la flecha de scroll apenas empiece a bajar
+            scrollPrompt.style.opacity = 0;
+
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = scrollTop / scrollHeight; // Valor de 0 a 1
+
+            // 1. Mostrar textos según el porcentaje de scroll
+            manageText(text1, scrollPercent, 0.1, 0.35);
+            manageText(text2, scrollPercent, 0.4, 0.65);
+            
+            // El texto final se queda en pantalla
+            if (scrollPercent > 0.8) {
+                text3.style.opacity = 1;
+                text3.style.transform = 'translateY(0)';
+            } else {
+                text3.style.opacity = 0;
+                text3.style.transform = 'translateY(20px)';
+            }
+
+            // 2. Armar el ramo progresivamente
+            const flowersToShow = Math.floor(scrollPercent * totalBouquetFlowers);
+            
+            bouquetFlowers.forEach((flower, index) => {
+                if (index < flowersToShow) {
+                    flower.style.opacity = 1;
+                    flower.style.transform = `scale(1.5) rotate(${index * 15}deg)`;
+                } else {
+                    flower.style.opacity = 0;
+                    flower.style.transform = `scale(0.1)`;
                 }
             });
-        }
+            
+            // Escalar todo el ramo al final
+            if (scrollPercent > 0.7) {
+                const extraScale = 1 + ((scrollPercent - 0.7) * 2); // Crece hasta el doble
+                bouquetWrapper.style.transform = `translate(-50%, -50%) scale(${extraScale})`;
+            } else {
+                bouquetWrapper.style.transform = `translate(-50%, -50%) scale(1)`;
+            }
+        });
 
-        window.addEventListener('scroll', verificarScroll);
-        // Verificación inicial por si la pantalla es muy grande
-        verificarScroll(); 
+        function manageText(element, scroll, start, end) {
+            if (scroll >= start && scroll <= end) {
+                // Fade in
+                element.style.opacity = 1;
+                element.style.transform = 'translateY(0)';
+            } else if (scroll > end) {
+                // Fade out hacia arriba
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(-20px)';
+            } else {
+                // Oculto abajo
+                element.style.opacity = 0;
+                element.style.transform = 'translateY(20px)';
+            }
+        }
     </script>
 </body>
 </html>
