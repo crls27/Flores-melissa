@@ -2,367 +2,464 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Meli ✨</title>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>Para Meli 💛</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-soft: #f4fafe;
-            --text-color: #333;
-        }
-
+        * { box-sizing: border-box; }
+        
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg-soft);
-            font-family: 'Georgia', serif;
-            overflow-x: hidden;
-            overflow-y: hidden; /* Se desbloquea en la fase 2 */
-            transition: background-color 1s ease;
+            background-color: #f0f4f8;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Oculto al inicio */
+            transition: background-color 2s ease;
+            scroll-behavior: smooth;
         }
 
-        /* FASE 1: Click y Jardín */
-        #intro-screen {
+        /* Clase mágica para desbloquear el scroll */
+        .scroll-libre {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        /* === CAPA 1: JARDÍN DE CLICS === */
+        #pantalla-interactiva {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 50;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #mensaje-toque {
+            font-size: 22px;
+            color: #555;
             text-align: center;
             pointer-events: none;
+            animation: respirar 2s infinite ease-in-out;
+            padding: 20px;
         }
 
-        #intro-text {
-            font-size: 1.5rem;
-            color: #557;
-            opacity: 0.8;
-            animation: pulse 2s infinite;
+        @keyframes respirar {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
-
-        .flower {
+        /* Efecto de onda al hacer clic */
+        .onda-clic {
             position: absolute;
-            font-size: 3rem;
-            transform: translate(-50%, -50%) scale(0);
-            animation: bloom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border-radius: 50%;
+            border: 2px solid #FFD700;
             pointer-events: none;
-            z-index: 5;
+            transform: translate(-50%, -50%) scale(0);
+            animation: expandirOnda 0.6s ease-out forwards;
         }
 
-        .hydrangea {
-            font-size: 8rem;
-            z-index: 6;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        @keyframes expandirOnda {
+            to { transform: translate(-50%, -50%) scale(3); opacity: 0; border-width: 0; }
         }
 
-        @keyframes bloom {
+        .flor-comun {
+            position: absolute;
+            font-size: 40px;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes popIn {
             to { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* Lluvia de pétalos */
-        .petal {
-            position: fixed;
-            top: -10%;
-            width: 15px;
-            height: 15px;
-            background: #ffd700;
-            border-radius: 15px 0 15px 0;
-            pointer-events: none;
-            z-index: 4;
-            animation: fall linear infinite;
-        }
-        .petal.blue {
-            background: #87cefa;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(720deg);
-            }
-        }
-
-        /* Flash de iluminación */
+        /* === CAPA 2: FLASH Y PÉTALOS === */
         #flash {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
-            z-index: 20;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #fff;
+            z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease-out;
         }
 
-        /* FASE 2: Scroll */
-        #scroll-prompt {
+        #contenedor-petalos {
             position: fixed;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            font-size: 1.2rem;
-            color: #557;
-            z-index: 15;
-            opacity: 0;
-            transition: opacity 1s ease;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
-            animation: bounce 2s infinite;
+            z-index: 10;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .petalo {
+            position: absolute;
+            top: -20px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50% 0 50% 0;
+            opacity: 0.7;
+            animation: caer linear infinite;
         }
 
-        #scroll-container {
-            height: 400vh; /* Espacio para scrollear */
+        @keyframes caer {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* === CAPA 3: SCROLL Y LA HORTENSIA DE EMOJIS === */
+        #contenedor-scroll {
             display: none;
+            height: 500vh; /* Largo para disfrutar la animación */
             position: relative;
-            z-index: 1;
+            z-index: 5;
         }
 
-        /* Ramo de flores */
-        #bouquet-wrapper {
+        #indicador-scroll {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #b8860b;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s;
+            animation: rebotar 2s infinite;
+            z-index: 20;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        @keyframes rebotar {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
+
+        /* Textos Narrativos */
+        .texto-fijo {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 85%;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s, transform 0.4s;
+        }
+
+        .texto-normal { font-size: 24px; color: #444; }
+        .texto-magico { font-family: 'Dancing Script', cursive; color: #d4af37; font-size: 45px; line-height: 1.2; }
+        
+        #texto-final {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* El Ramo/Hortensia Gigante */
+        #hortensia-gigante {
+            position: fixed;
+            top: 50%;
+            left: 50%;
             width: 300px;
             height: 300px;
-            z-index: 2;
+            transform: translate(-50%, -50%);
+            z-index: 15;
             pointer-events: none;
         }
 
-        .bouquet-flower {
+        .pieza-hortensia {
             position: absolute;
-            font-size: 2.5rem;
+            font-size: 35px;
             opacity: 0;
-            transition: opacity 0.3s ease, transform 0.5s ease;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
         }
 
-        /* Textos del scroll */
-        .scroll-text {
-            position: fixed;
-            width: 80%;
-            left: 10%;
-            text-align: center;
-            font-size: 2rem;
-            color: #222;
-            z-index: 10;
+        /* Brillo final del ramo */
+        #brillo-ramo {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,255,255,0) 70%);
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
             opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            text-shadow: 0 2px 10px rgba(255,255,255,0.9);
+            transition: opacity 1s;
+            z-index: 14;
         }
 
-        .final-text {
-            font-size: 2.2rem;
-            color: #b8860b;
-        }
-
-        .final-text b {
-            color: #ff4500;
-        }
     </style>
 </head>
 <body>
 
     <div id="flash"></div>
+    <div id="contenedor-petalos"></div>
 
-    <div id="intro-screen">
-        <div id="intro-text">Toca cualquier parte de la pantalla ✨</div>
+    <!-- PANTALLA INICIAL DE CLICS -->
+    <div id="pantalla-interactiva">
+        <div id="mensaje-toque">Hola Meli ✨<br><br><small>Toca cualquier parte de la pantalla</small></div>
     </div>
 
-    <div id="scroll-prompt">⬇ Desliza hacia abajo ⬇</div>
+    <div id="indicador-scroll">
+        La magia ha comenzado ✨<br>Desliza hacia abajo 👇
+    </div>
 
-    <div id="scroll-container">
-        <!-- Contenedor fijo para los textos y el ramo mientras se scrollea -->
-        <div id="bouquet-wrapper"></div>
-        <div id="text-1" class="scroll-text" style="top: 20%;">"Todo el mundo regala esto..."</div>
-        <div id="text-2" class="scroll-text" style="top: 40%;">"Pero tú no eres todo el mundo"</div>
-        <div id="text-3" class="scroll-text final-text" style="top: 60%;">"No quería darte las típicas flores amarillas, quería darte <b>tus</b> flores amarillas, un detalle solo para ti, Meli."</div>
+    <!-- ESPACIO DE SCROLL -->
+    <div id="contenedor-scroll">
+        
+        <!-- Textos -->
+        <div id="texto-1" class="texto-fijo texto-normal">
+            Todo el mundo regala esto hoy...<br><br>
+            <span style="font-size: 60px;">🌻</span>
+        </div>
+        
+        <div id="texto-2" class="texto-fijo">
+            <span class="texto-magico" style="font-size: 55px;">Pero tú no eres todo el mundo.</span>
+        </div>
+        
+        <div id="texto-3" class="texto-fijo" id="texto-final" style="margin-top: 150px;">
+            No quería darte las típicas flores amarillas.<br>
+            Quería crear <b style="color: #d4af37;">TUS</b> flores amarillas.<br>
+            <span class="texto-magico" style="font-size: 35px; display: block; margin-top: 10px;">Un detalle solo para ti, Meli. 💛</span>
+        </div>
+
+        <!-- El ramo que se construye con código -->
+        <div id="hortensia-gigante">
+            <div id="brillo-ramo"></div>
+            <!-- Las piezas se inyectan con JavaScript -->
+        </div>
+
     </div>
 
     <script>
-        let clickCount = 0;
-        let phase = 1;
-        const targetClicks = Math.floor(Math.random() * 6) + 10; // Entre 10 y 15
+        // === VARIABLES Y CONFIGURACIÓN ===
+        const clicsNecesarios = 10;
+        let contadorClics = 0;
+        let magiaActivada = false;
         
-        // Elementos
-        const introText = document.getElementById('intro-text');
+        const pantalla = document.getElementById('pantalla-interactiva');
+        const mensajeToque = document.getElementById('mensaje-toque');
         const flash = document.getElementById('flash');
-        const scrollPrompt = document.getElementById('scroll-prompt');
-        const scrollContainer = document.getElementById('scroll-container');
-        const bouquetWrapper = document.getElementById('bouquet-wrapper');
-        
-        const text1 = document.getElementById('text-1');
-        const text2 = document.getElementById('text-2');
-        const text3 = document.getElementById('text-3');
+        const scrollContenedor = document.getElementById('contenedor-scroll');
+        const htmlBody = [document.documentElement, document.body];
 
-        // FASE 1: Click en la pantalla
-        window.addEventListener('click', (e) => {
-            if (phase !== 1) return;
+        // Arreglo para guardar las piezas de la hortensia
+        const piezasHortensia = []; 
+        const emojisHortensia = ['🌼', '🏵️', '✨', '💛', '🌼', '🏵️'];
 
-            // Ocultar texto inicial al primer click
-            if (clickCount === 0) introText.style.opacity = 0;
+        // === FASE 1: LOS CLICS MÁGICOS ===
+        pantalla.addEventListener('click', (e) => {
+            if (magiaActivada) return;
+            
+            contadorClics++;
+            if (contadorClics === 1) mensajeToque.style.opacity = '0';
 
-            clickCount++;
+            // Crear onda expansiva
+            crearOnda(e.clientX, e.clientY);
 
-            // Crear flor amarilla normal
-            createFlower(e.clientX, e.clientY, '🌼', false);
-
-            if (clickCount === targetClicks) {
-                triggerMagic(e.clientX, e.clientY);
+            if (contadorClics < clicsNecesarios) {
+                // Generar flor común
+                crearFlorComun(e.clientX, e.clientY);
+            } else {
+                // ¡LA MAGIA!
+                magiaActivada = true;
+                crearFlorComun(e.clientX, e.clientY); // Una última
+                desatarMagia();
             }
         });
 
-        function createFlower(x, y, emoji, isHydrangea) {
-            const flower = document.createElement('div');
-            flower.className = 'flower' + (isHydrangea ? ' hydrangea' : '');
-            flower.innerText = emoji;
-            flower.style.left = x + 'px';
-            flower.style.top = y + 'px';
-            
-            // Rotación aleatoria para que se vea natural
-            flower.style.transform = `translate(-50%, -50%) scale(0) rotate(${Math.random() * 360}deg)`;
-            
-            document.body.appendChild(flower);
+        function crearOnda(x, y) {
+            const onda = document.createElement('div');
+            onda.classList.add('onda-clic');
+            onda.style.left = x + 'px';
+            onda.style.top = y + 'px';
+            onda.style.width = '60px';
+            onda.style.height = '60px';
+            pantalla.appendChild(onda);
+            setTimeout(() => onda.remove(), 600);
         }
 
-        function triggerMagic(x, y) {
-            phase = 2;
-            
-            // Flash de iluminación
-            flash.style.opacity = 1;
-            setTimeout(() => {
-                flash.style.opacity = 0;
-                document.body.style.backgroundColor = '#fffacd'; // Fondo se vuelve un amarillo muy suave
-            }, 500);
-
-            // Aparece la hortensia
-            createFlower(x, y, '🪻', true); // Emoji de hortensia/jacinto
-
-            // Lluvia de pétalos
-            startPetalRain();
-
-            // Preparar el scroll
-            setTimeout(() => {
-                scrollContainer.style.display = 'block';
-                document.body.style.overflowY = 'auto'; // Permitir scroll
-                scrollPrompt.style.opacity = 1;
-                prepareBouquet();
-            }, 2000);
+        function crearFlorComun(x, y) {
+            const flor = document.createElement('div');
+            flor.classList.add('flor-comun');
+            flor.innerText = '🌻';
+            flor.style.left = x + 'px';
+            flor.style.top = y + 'px';
+            flor.style.transform = `translate(-50%, -50%) scale(0) rotate(${Math.random() * 60 - 30}deg)`;
+            pantalla.appendChild(flor);
         }
 
-        function startPetalRain() {
+        function desatarMagia() {
+            // Flash blanco
+            flash.style.opacity = '1';
+            
+            // Sonido táctil sutil (Vibración si el celular lo permite)
+            if(navigator.vibrate) navigator.vibrate([50, 50, 50]);
+            
+            setTimeout(() => {
+                flash.style.opacity = '0';
+                
+                // Cambiar la vibra de la página
+                document.body.style.backgroundColor = '#fffaf0'; 
+                pantalla.style.display = 'none'; // Quitar bloqueo de clics
+                
+                iniciarLluviaPetalos();
+                prepararHortensia();
+                
+                // Habilitar Scroll
+                scrollContenedor.style.display = 'block';
+                htmlBody.forEach(el => el.classList.add('scroll-libre'));
+                
+                document.getElementById('indicador-scroll').style.opacity = '1';
+            }, 400);
+        }
+
+        // === FASE 2: LLUVIA DE PÉTALOS AZULES Y AMARILLOS ===
+        function iniciarLluviaPetalos() {
+            const contenedor = document.getElementById('contenedor-petalos');
+            const colores = ['#FFD700', '#FFC125', '#4169E1', '#87CEFA']; // Tonos hortensia y primavera
+
             setInterval(() => {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
+                const petalo = document.createElement('div');
+                petalo.classList.add('petalo');
+                petalo.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+                petalo.style.left = Math.random() * 100 + 'vw';
                 
-                // 30% de probabilidad de ser azul (típico de hortensias)
-                if (Math.random() > 0.7) {
-                    petal.classList.add('blue');
-                }
-
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                petal.style.opacity = Math.random() + 0.5;
+                const duracion = Math.random() * 4 + 4;
+                petalo.style.animationDuration = duracion + 's';
                 
-                document.body.appendChild(petal);
+                // Variar el tamaño para dar profundidad
+                const tamano = Math.random() * 10 + 8;
+                petalo.style.width = tamano + 'px';
+                petalo.style.height = tamano + 'px';
 
-                // Limpiar pétalos viejos
-                setTimeout(() => { petal.remove(); }, 5000);
-            }, 100); // Crea un pétalo cada 100ms
+                contenedor.appendChild(petalo);
+                setTimeout(() => petalo.remove(), duracion * 1000);
+            }, 150);
         }
 
-        // FASE 2: Armado del ramo por Scroll
-        const totalBouquetFlowers = 50;
-        const bouquetFlowers = [];
+        // === FASE 3: CONSTRUIR LA HORTENSIA DE EMOJIS ===
+        function prepararHortensia() {
+            const contenedor = document.getElementById('hortensia-gigante');
+            const totalPiezas = 70; // Cantidad de emojis que formarán la hortensia
 
-        function prepareBouquet() {
-            // Pre-crear las flores del ramo ocultas
-            for (let i = 0; i < totalBouquetFlowers; i++) {
-                const f = document.createElement('div');
-                f.className = 'bouquet-flower';
-                f.innerText = '🌼';
+            for (let i = 0; i < totalPiezas; i++) {
+                const pieza = document.createElement('div');
+                pieza.classList.add('pieza-hortensia');
+                pieza.innerText = emojisHortensia[Math.floor(Math.random() * emojisHortensia.length)];
                 
-                // Distribución circular aleatoria
-                const angle = Math.random() * Math.PI * 2;
-                const radius = Math.sqrt(Math.random()) * 120; // Radio máx 120px
-                const x = 150 + Math.cos(angle) * radius;
-                const y = 150 + Math.sin(angle) * radius;
+                // Posición matemática en forma de círculo concentrado (Tipo Hortensia)
+                const angulo = Math.random() * Math.PI * 2;
+                // Radio más denso en el centro, más disperso en los bordes
+                const radio = Math.sqrt(Math.random()) * 110; 
                 
-                f.style.left = x + 'px';
-                f.style.top = y + 'px';
-                f.style.transform = `scale(0.1) rotate(${Math.random() * 360}deg)`;
+                const xFinal = Math.cos(angulo) * radio;
+                const yFinal = Math.sin(angulo) * radio;
+
+                // Guardamos las coordenadas objetivo para usarlas durante el scroll
+                pieza.dataset.xFinal = xFinal;
+                pieza.dataset.yFinal = yFinal;
+                pieza.dataset.rotacion = Math.random() * 360;
+
+                // Empiezan esparcidos aleatoriamente fuera de la pantalla
+                const xInicio = (Math.random() - 0.5) * 1500;
+                const yInicio = (Math.random() - 0.5) * 1500;
                 
-                bouquetWrapper.appendChild(f);
-                bouquetFlowers.push(f);
+                pieza.style.transform = `translate(${xInicio}px, ${yInicio}px) scale(0)`;
+                
+                contenedor.appendChild(pieza);
+                piezasHortensia.push({ el: pieza, xIni: xInicio, yIni: yInicio, xFin: xFinal, yFin: yFinal });
             }
         }
 
+        // === FASE 4: EL SCROLL NARRATIVO ===
         window.addEventListener('scroll', () => {
-            if (phase !== 2) return;
-            
-            // Ocultar la flecha de scroll apenas empiece a bajar
-            scrollPrompt.style.opacity = 0;
+            if (!magiaActivada) return;
 
-            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrollPercent = scrollTop / scrollHeight; // Valor de 0 a 1
-
-            // 1. Mostrar textos según el porcentaje de scroll
-            manageText(text1, scrollPercent, 0.1, 0.35);
-            manageText(text2, scrollPercent, 0.4, 0.65);
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const altoVentana = window.innerHeight;
+            const indicador = document.getElementById('indicador-scroll');
             
-            // El texto final se queda en pantalla
-            if (scrollPercent > 0.8) {
-                text3.style.opacity = 1;
-                text3.style.transform = 'translateY(0)';
+            if (scrollTop > 50) indicador.style.opacity = '0';
+
+            // Calcular progreso del scroll de 0 a 1 (tenemos 500vh, así que dividimos entre 4 alturas)
+            let progreso = scrollTop / (altoVentana * 4);
+            if (progreso > 1) progreso = 1;
+
+            // Controlar Textos
+            manejarTexto('texto-1', progreso, 0.02, 0.20);
+            manejarTexto('texto-2', progreso, 0.25, 0.45);
+            
+            // Texto final se queda
+            const texto3 = document.getElementById('texto-3');
+            if (progreso > 0.85) {
+                texto3.style.opacity = '1';
+                texto3.style.transform = 'translate(-50%, -50%) translateY(0)';
             } else {
-                text3.style.opacity = 0;
-                text3.style.transform = 'translateY(20px)';
+                texto3.style.opacity = '0';
+                texto3.style.transform = 'translate(-50%, -50%) translateY(20px)';
             }
 
-            // 2. Armar el ramo progresivamente
-            const flowersToShow = Math.floor(scrollPercent * totalBouquetFlowers);
-            
-            bouquetFlowers.forEach((flower, index) => {
-                if (index < flowersToShow) {
-                    flower.style.opacity = 1;
-                    flower.style.transform = `scale(1.5) rotate(${index * 15}deg)`;
-                } else {
-                    flower.style.opacity = 0;
-                    flower.style.transform = `scale(0.1)`;
-                }
-            });
-            
-            // Escalar todo el ramo al final
-            if (scrollPercent > 0.7) {
-                const extraScale = 1 + ((scrollPercent - 0.7) * 2); // Crece hasta el doble
-                bouquetWrapper.style.transform = `translate(-50%, -50%) scale(${extraScale})`;
-            } else {
-                bouquetWrapper.style.transform = `translate(-50%, -50%) scale(1)`;
-            }
+            // Ensamblar la Hortensia Progresivamente
+            animarHortensia(progreso);
         });
 
-        function manageText(element, scroll, start, end) {
-            if (scroll >= start && scroll <= end) {
-                // Fade in
-                element.style.opacity = 1;
-                element.style.transform = 'translateY(0)';
-            } else if (scroll > end) {
-                // Fade out hacia arriba
-                element.style.opacity = 0;
-                element.style.transform = 'translateY(-20px)';
+        function manejarTexto(id, progreso, inicio, fin) {
+            const el = document.getElementById(id);
+            if (progreso >= inicio && progreso <= fin) {
+                el.style.opacity = '1';
+                el.style.transform = 'translate(-50%, -50%) scale(1)';
             } else {
-                // Oculto abajo
-                element.style.opacity = 0;
-                element.style.transform = 'translateY(20px)';
+                el.style.opacity = '0';
+                const offsetY = progreso > fin ? '-30px' : '30px';
+                el.style.transform = `translate(-50%, calc(-50% + ${offsetY})) scale(0.9)`;
+            }
+        }
+
+        function animarHortensia(progreso) {
+            // El ensamblaje ocurre entre el 50% y el 85% del scroll
+            let progresoEnsamblaje = (progreso - 0.5) / 0.35;
+            if (progresoEnsamblaje < 0) progresoEnsamblaje = 0;
+            if (progresoEnsamblaje > 1) progresoEnsamblaje = 1;
+
+            const brillo = document.getElementById('brillo-ramo');
+            
+            if (progreso > 0.5) {
+                brillo.style.opacity = progresoEnsamblaje;
+                
+                piezasHortensia.forEach((pieza, index) => {
+                    // Matemáticas para interpolar entre la posición inicial (dispersa) y la final (armada)
+                    const xActual = pieza.xIni + (pieza.xFin - pieza.xIni) * progresoEnsamblaje;
+                    const yActual = pieza.yIni + (pieza.yFin - pieza.yIni) * progresoEnsamblaje;
+                    
+                    // Efecto de rotación y escalado mientras se arma
+                    const scale = progresoEnsamblaje * (1 + Math.random() * 0.2); 
+                    const rotacionActual = pieza.el.dataset.rotacion * progresoEnsamblaje;
+
+                    pieza.el.style.opacity = progresoEnsamblaje;
+                    pieza.el.style.transform = `translate(calc(-50% + ${xActual}px), calc(-50% + ${yActual}px)) scale(${scale}) rotate(${rotacionActual}deg)`;
+                });
+            } else {
+                brillo.style.opacity = '0';
+                piezasHortensia.forEach(pieza => pieza.el.style.opacity = '0');
             }
         }
     </script>
