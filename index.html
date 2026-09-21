@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Melissa 💛</title>
+    <!-- Importamos fuentes bonitas -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Librería para la explosión mágica -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #e0e5ec; /* Fondo inicial apagado */
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            transition: background-color 2s ease;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .container {
+            padding: 20px;
+            z-index: 10;
+        }
+
+        #mensaje-inicial {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+            transition: opacity 0.5s;
+        }
+
+        /* Contenedor de las flores */
+        .flower-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto;
+        }
+
+        /* Flor común (Girasol/Margarita típica en Emoji o imagen) */
+        #flor-comun {
+            font-size: 120px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s;
+        }
+
+        /* La Hortensia de Melissa (Oculta al inicio) */
+        #flor-melissa {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 50%; /* Hace la imagen redonda */
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); /* Brillo dorado */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0); /* Escondida y pequeña */
+            opacity: 0;
+            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1.5s;
+        }
+
+        /* Botón de acción */
+        #btn-magia {
+            margin-top: 50px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background-color: #888;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            /* Evitar que en móviles se seleccione el texto al mantener presionado */
+            -webkit-touch-callout: none;
+        }
+
+        /* Mensaje Final (Oculto al inicio) */
+        #mensaje-final {
+            opacity: 0;
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 90%;
+            pointer-events: none;
+            transition: opacity 2s ease 1s; /* Aparece con retraso */
+        }
+
+        #mensaje-final h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #d4af37;
+            font-size: 40px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #mensaje-final p {
+            color: #444;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Animación cuando se mantiene presionado (Temblor) */
+        .shaking {
+            animation: shake 0.4s infinite, pulse 0.8s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-52%, -50%) rotate(-5deg); }
+            50% { transform: translate(-50%, -50%) rotate(0deg); }
+            75% { transform: translate(-48%, -50%) rotate(5deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.3) drop-shadow(0 0 10px yellow); }
+            100% { filter: brightness(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="escena">
+        <div id="mensaje-inicial">
+            <p>Hoy 21 de septiembre, todo el mundo regala esto...</p>
+        </div>
+
+        <div class="flower-container">
+            <!-- La flor típica -->
+            <div id="flor-comun">🌻</div>
+            
+            <!-- AQUI PONES EL LINK DE LA IMAGEN DE LA HORTENSIA AMARILLA -->
+            <img id="flor-melissa" src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" alt="Hortensia Amarilla">
+        </div>
+
+        <button id="btn-magia">Pero tú no eres todo el mundo<br><small>(Mantén presionado)</small></button>
+    </div>
+
+    <div id="mensaje-final">
+        <h1>Para Melissa</h1>
+        <p>No quería darte las típicas flores amarillas.<br>
+        Quería darte <b>TUS</b> flores amarillas.<br>
+        Porque el detalle no lo hace la fecha, lo haces tú.</p>
+    </div>
+
+    <script>
+        const btnMagia = document.getElementById('btn-magia');
+        const florComun = document.getElementById('flor-comun');
+        const florMelissa = document.getElementById('flor-melissa');
+        const msjInicial = document.getElementById('mensaje-inicial');
+        const msjFinal = document.getElementById('mensaje-final');
+        const body = document.body;
+
+        let pressTimer;
+        let isTransformed = false;
+
+        // Función cuando empieza a presionar
+        function startPress(e) {
+            if (isTransformed) return;
+            // Prevenir el menú contextual en celulares
+            if(e.type === 'touchstart') {
+                e.preventDefault(); 
+            }
+            
+            btnMagia.style.transform = "scale(0.95)";
+            btnMagia.style.backgroundColor = "#d4af37";
+            florComun.classList.add("shaking");
+
+            // Tiempo necesario para transformarse: 2.5 segundos
+            pressTimer = window.setTimeout(transformFlower, 2500);
+        }
+
+        // Función cuando suelta antes de tiempo
+        function cancelPress() {
+            if (isTransformed) return;
+            clearTimeout(pressTimer);
+            btnMagia.style.transform = "scale(1)";
+            btnMagia.style.backgroundColor = "#888";
+            florComun.classList.remove("shaking");
+        }
+
+        // ¡La magia sucede!
+        function transformFlower() {
+            isTransformed = true;
+            
+            // Explosión de colores
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.5 },
+                colors: ['#FFD700', '#FFA500', '#FFFFFF', '#87CEEB'] // Tonos amarillos y celestes
+            });
+
+            // Cambios de interfaz
+            florComun.style.opacity = "0";
+            florComun.style.transform = "translate(-50%, -50%) scale(0)";
+            
+            btnMagia.style.opacity = "0";
+            setTimeout(() => btnMagia.style.display = "none", 500);
+            
+            msjInicial.style.opacity = "0";
+
+            // Aparece la hortensia
+            florMelissa.style.opacity = "1";
+            florMelissa.style.transform = "translate(-50%, -50%) scale(1)";
+
+            // Cambia el fondo a un color primaveral suave
+            body.style.backgroundColor = "#fff9e6";
+
+            // Muestra tu mensaje
+            msjFinal.style.opacity = "1";
+            msjFinal.style.pointerEvents = "auto";
+        }
+
+        // Eventos para Celulares (Tocar) y Computadoras (Click)
+        btnMagia.addEventListener('touchstart', startPress, {passive: false});
+        btnMagia.addEventListener('touchend', cancelPress);
+        btnMagia.addEventListener('mousedown', startPress);
+        btnMagia.addEventListener('mouseup', cancelPress);
+        btnMagia.addEventListener('mouseleave', cancelPress);
+        
+        // Evita el menú de opciones al mantener presionado en el celu
+        btnMagia.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
+
