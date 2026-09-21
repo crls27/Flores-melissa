@@ -3,240 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Melissa 💛</title>
-    <!-- Importamos fuentes bonitas -->
+    <title>Para ti, Meli 💛</title>
+    <!-- Fuentes tipográficas elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Librería para la explosión mágica -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
-        body {
+        /* === ESTILOS GENERALES === */
+        body, html {
             margin: 0;
             padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f1ea; /* Fondo suave inicial */
+            overflow: hidden; /* Ocultamos el scroll al principio */
+            transition: background-color 2s ease;
+            scroll-behavior: smooth;
+        }
+
+        /* === PANTALLA 1: EL JARDÍN MÁGICO (CLICS) === */
+        #pantalla-interactiva {
+            width: 100vw;
             height: 100vh;
+            position: relative;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* Evitar selección de texto */
+            user-select: none; 
+        }
+
+        #mensaje-toque {
+            font-size: 22px;
+            color: #666;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            animation: pulseText 2s infinite;
+            padding: 20px;
+        }
+
+        @keyframes pulseText {
+            0% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        /* Las flores que aparecen con los clics */
+        .flor-clic {
+            position: absolute;
+            font-size: 50px;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.1));
+        }
+
+        /* La hortensia especial del clic 10 */
+        .hortensia-magica {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 1);
+            animation: popInHortensia 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            z-index: 20;
+        }
+
+        @keyframes popIn {
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes popInHortensia {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-20deg); }
+            50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        /* Efecto de destello de luz (Flash) */
+        #flash-luz {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* Indicador de Scroll */
+        #scroll-indicador {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            color: #d4af37;
+            font-size: 18px;
+            font-weight: 600;
+            pointer-events: none;
+            transition: opacity 1s 1s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: bounce 2s infinite;
+        }
+        #scroll-indicador span { font-size: 30px; margin-top: 5px; }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        /* === LLUVIA DE PÉTALOS === */
+        #contenedor-petalos {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .petalo {
+            position: absolute;
+            top: -10%;
+            width: 15px;
+            height: 15px;
+            border-radius: 50% 0 50% 0; /* Forma de pétalo */
+            opacity: 0.8;
+            animation: caer linear infinite;
+        }
+
+        @keyframes caer {
+            0% { transform: translateY(0) rotate(0deg) translateX(0); }
+            50% { transform: translateY(55vh) rotate(180deg) translateX(50px); }
+            100% { transform: translateY(110vh) rotate(360deg) translateX(-50px); }
+        }
+
+        /* === SECCIONES DE SCROLL === */
+        .seccion-scroll {
+            min-height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #e0e5ec; /* Fondo inicial apagado */
-            font-family: 'Poppins', sans-serif;
             text-align: center;
-            transition: background-color 2s ease;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        .container {
             padding: 20px;
+            box-sizing: border-box;
+            position: relative;
             z-index: 10;
         }
 
-        #mensaje-inicial {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 30px;
-            transition: opacity 0.5s;
-        }
-
-        /* Contenedor de las flores */
-        .flower-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            margin: 0 auto;
-        }
-
-        /* Flor común (Girasol/Margarita típica en Emoji o imagen) */
-        #flor-comun {
-            font-size: 120px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.1s;
-        }
-
-        /* La Hortensia de Melissa (Oculta al inicio) */
-        #flor-melissa {
-            width: 220px;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 50%; /* Hace la imagen redonda */
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); /* Brillo dorado */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0); /* Escondida y pequeña */
+        .texto-revelar {
+            font-size: 28px;
+            color: #333;
             opacity: 0;
-            transition: transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1.5s;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+            max-width: 800px;
+        }
+        
+        .texto-revelar.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* Botón de acción */
-        #btn-magia {
-            margin-top: 50px;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-            background-color: #888;
-            border: none;
-            border-radius: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            cursor: pointer;
-            /* Evitar que en móviles se seleccione el texto al mantener presionado */
-            -webkit-touch-callout: none;
-        }
-
-        /* Mensaje Final (Oculto al inicio) */
-        #mensaje-final {
-            opacity: 0;
-            position: absolute;
-            top: 65%;
-            left: 50%;
-            transform: translate(-50%, 0);
-            width: 90%;
-            pointer-events: none;
-            transition: opacity 2s ease 1s; /* Aparece con retraso */
-        }
-
-        #mensaje-final h1 {
+        .texto-destacado {
             font-family: 'Dancing Script', cursive;
             color: #d4af37;
-            font-size: 40px;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 45px;
+            margin-top: 15px;
+            display: block;
         }
 
-        #mensaje-final p {
+        /* === EL RAMO FINAL QUE SE ARMA === */
+        #ramo-contenedor {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 40px auto;
+        }
+
+        .flor-ramo {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Posiciones iniciales esparcidas (antes del scroll) */
+        .f1 { top: -200px; left: -200px; transform: rotate(-45deg) scale(0.5); }
+        .f2 { top: -200px; right: -200px; transform: rotate(45deg) scale(0.5); }
+        .f3 { bottom: -200px; left: -200px; transform: rotate(-90deg) scale(0.5); }
+        .f4 { bottom: -200px; right: -200px; transform: rotate(90deg) scale(0.5); }
+        .f5 { top: -300px; left: 50%; transform: translateX(-50%) scale(0.5); }
+        .f-centro { top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 5; width: 160px; height: 160px;}
+
+        /* Posiciones finales juntas (ramo armado) */
+        #ramo-contenedor.armado .flor-ramo { opacity: 1; }
+        #ramo-contenedor.armado .f1 { top: 20px; left: 20px; transform: rotate(-15deg) scale(1); }
+        #ramo-contenedor.armado .f2 { top: 20px; right: 20px; transform: rotate(15deg) scale(1); }
+        #ramo-contenedor.armado .f3 { bottom: 40px; left: 30px; transform: rotate(-30deg) scale(1); }
+        #ramo-contenedor.armado .f4 { bottom: 40px; right: 30px; transform: rotate(30deg) scale(1); }
+        #ramo-contenedor.armado .f5 { top: 0; left: 50%; transform: translateX(-50%) rotate(0deg) scale(1); z-index: 2; }
+        #ramo-contenedor.armado .f-centro { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 30px #FFD700; }
+
+        .mensaje-final {
+            font-size: 22px;
             color: #444;
-            font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* Animación cuando se mantiene presionado (Temblor) */
-        .shaking {
-            animation: shake 0.4s infinite, pulse 0.8s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-52%, -50%) rotate(-5deg); }
-            50% { transform: translate(-50%, -50%) rotate(0deg); }
-            75% { transform: translate(-48%, -50%) rotate(5deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-
-        @keyframes pulse {
-            0% { filter: brightness(1); }
-            50% { filter: brightness(1.3) drop-shadow(0 0 10px yellow); }
-            100% { filter: brightness(1); }
-        }
     </style>
 </head>
 <body>
 
-    <div class="container" id="escena">
-        <div id="mensaje-inicial">
-            <p>Hoy 21 de septiembre, todo el mundo regala esto...</p>
-        </div>
+    <!-- Destello de luz -->
+    <div id="flash-luz"></div>
+    
+    <!-- Lluvia de pétalos -->
+    <div id="contenedor-petalos"></div>
 
-        <div class="flower-container">
-            <!-- La flor típica -->
-            <div id="flor-comun">🌻</div>
-            
-            <!-- AQUI PONES EL LINK DE LA IMAGEN DE LA HORTENSIA AMARILLA -->
-            <img id="flor-melissa" src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" alt="Hortensia Amarilla">
+    <!-- PANTALLA 1: EL JARDÍN MÁGICO -->
+    <div id="pantalla-interactiva">
+        <h2 id="mensaje-toque">Hola Meli... <br><br><small>Toca cualquier parte de la pantalla</small></h2>
+        <div id="scroll-indicador">
+            ¡La magia ha comenzado! <br> Desliza hacia abajo
+            <span>👇</span>
         </div>
-
-        <button id="btn-magia">Pero tú no eres todo el mundo<br><small>(Mantén presionado)</small></button>
     </div>
 
-    <div id="mensaje-final">
-        <h1>Para Melissa</h1>
-        <p>No quería darte las típicas flores amarillas.<br>
-        Quería darte <b>TUS</b> flores amarillas.<br>
-        Porque el detalle no lo hace la fecha, lo haces tú.</p>
+    <!-- PANTALLA 2: LO TÍPICO -->
+    <div class="seccion-scroll">
+        <div class="texto-revelar">
+            Todo el mundo regala esto hoy...<br>
+            <span style="font-size: 80px; margin-top: 20px; display: block;">🌻</span>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: LA EXCEPCIÓN -->
+    <div class="seccion-scroll">
+        <div class="texto-revelar">
+            <span class="texto-destacado" style="font-size: 60px;">Pero tú no eres todo el mundo.</span>
+        </div>
+    </div>
+
+    <!-- PANTALLA 4: EL RAMO Y EL MENSAJE FINAL -->
+    <div class="seccion-scroll" style="min-height: 120vh; justify-content: flex-start; padding-top: 10vh;">
+        <div class="texto-revelar mensaje-final">
+            No quería darte las típicas flores amarillas...
+        </div>
+
+        <div id="ramo-contenedor" class="texto-revelar">
+            <!-- Usamos la imagen de la hortensia varias veces para simular el ramo -->
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f1">
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f2">
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f3">
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f4">
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f5">
+            <img src="https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg" class="flor-ramo f-centro">
+        </div>
+
+        <div class="texto-revelar mensaje-final" style="margin-top: 20px;">
+            quería darte <b style="color: #d4af37;">TUS</b> flores amarillas.<br>
+            <span class="texto-destacado">Un detalle solo para ti, Meli. 💛</span>
+        </div>
     </div>
 
     <script>
-        const btnMagia = document.getElementById('btn-magia');
-        const florComun = document.getElementById('flor-comun');
-        const florMelissa = document.getElementById('flor-melissa');
-        const msjInicial = document.getElementById('mensaje-inicial');
-        const msjFinal = document.getElementById('mensaje-final');
+        // === LÓGICA DE CLICS (JARDÍN MÁGICO) ===
+        const pantallaInteractiva = document.getElementById('pantalla-interactiva');
+        const mensajeToque = document.getElementById('mensaje-toque');
+        const flashLuz = document.getElementById('flash-luz');
+        const scrollIndicador = document.getElementById('scroll-indicador');
         const body = document.body;
-
-        let pressTimer;
-        let isTransformed = false;
-
-        // Función cuando empieza a presionar
-        function startPress(e) {
-            if (isTransformed) return;
-            // Prevenir el menú contextual en celulares
-            if(e.type === 'touchstart') {
-                e.preventDefault(); 
-            }
-            
-            btnMagia.style.transform = "scale(0.95)";
-            btnMagia.style.backgroundColor = "#d4af37";
-            florComun.classList.add("shaking");
-
-            // Tiempo necesario para transformarse: 2.5 segundos
-            pressTimer = window.setTimeout(transformFlower, 2500);
-        }
-
-        // Función cuando suelta antes de tiempo
-        function cancelPress() {
-            if (isTransformed) return;
-            clearTimeout(pressTimer);
-            btnMagia.style.transform = "scale(1)";
-            btnMagia.style.backgroundColor = "#888";
-            florComun.classList.remove("shaking");
-        }
-
-        // ¡La magia sucede!
-        function transformFlower() {
-            isTransformed = true;
-            
-            // Explosión de colores
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.5 },
-                colors: ['#FFD700', '#FFA500', '#FFFFFF', '#87CEEB'] // Tonos amarillos y celestes
-            });
-
-            // Cambios de interfaz
-            florComun.style.opacity = "0";
-            florComun.style.transform = "translate(-50%, -50%) scale(0)";
-            
-            btnMagia.style.opacity = "0";
-            setTimeout(() => btnMagia.style.display = "none", 500);
-            
-            msjInicial.style.opacity = "0";
-
-            // Aparece la hortensia
-            florMelissa.style.opacity = "1";
-            florMelissa.style.transform = "translate(-50%, -50%) scale(1)";
-
-            // Cambia el fondo a un color primaveral suave
-            body.style.backgroundColor = "#fff9e6";
-
-            // Muestra tu mensaje
-            msjFinal.style.opacity = "1";
-            msjFinal.style.pointerEvents = "auto";
-        }
-
-        // Eventos para Celulares (Tocar) y Computadoras (Click)
-        btnMagia.addEventListener('touchstart', startPress, {passive: false});
-        btnMagia.addEventListener('touchend', cancelPress);
-        btnMagia.addEventListener('mousedown', startPress);
-        btnMagia.addEventListener('mouseup', cancelPress);
-        btnMagia.addEventListener('mouseleave', cancelPress);
         
-        // Evita el menú de opciones al mantener presionado en el celu
-        btnMagia.addEventListener('contextmenu', e => e.preventDefault());
+        let contadorClics = 0;
+        const clicsNecesarios = 10; // Al décimo clic ocurre la magia
+        let magiaActivada = false;
+
+        pantallaInteractiva.addEventListener('click', (e) => {
+            if (magiaActivada) return; // Si ya se activó la magia, no hace nada más
+
+            contadorClics++;
+            
+            // Ocultar texto inicial al primer clic
+            if(contadorClics === 1) {
+                mensajeToque.style.opacity = '0';
+            }
+
+            if (contadorClics < clicsNecesarios) {
+                // Generar flores comunes (girasoles)
+                crearFlorComun(e.clientX, e.clientY);
+            } else {
+                // CLÍMAX: Generar la Hortensia
+                crearHortensia(e.clientX, e.clientY);
+                desatarMagia();
+            }
+        });
+
+        function crearFlorComun(x, y) {
+            const flor = document.createElement('div');
+            flor.classList.add('flor-clic');
+            flor.innerText = '🌻';
+            flor.style.left = x + 'px';
+            flor.style.top = y + 'px';
+            
+            // Rotación aleatoria para que se vea natural
+            const rotacion = Math.floor(Math.random() * 40) - 20; 
+            flor.style.transform = `translate(-50%, -50%) rotate(${rotacion}deg)`;
+            
+            pantallaInteractiva.appendChild(flor);
+        }
+
+        function crearHortensia(x, y) {
+            const hortensia = document.createElement('img');
+            hortensia.src = 'https://www.blancoazahar.es/wp-content/uploads/2024/03/SP-06398.jpg';
+            hortensia.classList.add('hortensia-magica');
+            hortensia.style.left = x + 'px';
+            hortensia.style.top = y + 'px';
+            pantallaInteractiva.appendChild(hortensia);
+        }
+
+        function desatarMagia() {
+            magiaActivada = true;
+
+            // 1. Efecto Flash de luz
+            flashLuz.style.opacity = '1';
+            setTimeout(() => { flashLuz.style.opacity = '0'; }, 300);
+
+            // 2. Cambiar fondo a uno más cálido e iluminado
+            body.style.backgroundColor = '#fff9e6';
+
+            // 3. Iniciar lluvia de pétalos
+            iniciarLluviaPetalos();
+
+            // 4. Habilitar el scroll y mostrar indicador
+            body.style.overflow = 'auto';
+            scrollIndicador.style.opacity = '1';
+        }
+
+        // === LÓGICA DE LA LLUVIA DE PÉTALOS ===
+        function iniciarLluviaPetalos() {
+            const contenedor = document.getElementById('contenedor-petalos');
+            const colores = ['#FFD700', '#FFC125', '#4169E1', '#6495ED']; // Amarillos y Azules
+
+            setInterval(() => {
+                const petalo = document.createElement('div');
+                petalo.classList.add('petalo');
+                
+                // Color aleatorio (Amarillo o Azul de hortensia)
+                petalo.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+                
+                // Posición horizontal aleatoria
+                petalo.style.left = Math.random() * 100 + 'vw';
+                
+                // Duración de caída aleatoria (entre 4 y 8 segundos)
+                petalo.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                
+                // Tamaño ligeramente aleatorio
+                const tamano = (Math.random() * 10 + 10) + 'px';
+                petalo.style.width = tamano;
+                petalo.style.height = tamano;
+
+                contenedor.appendChild(petalo);
+
+                // Eliminar el pétalo después de que cae para no saturar la memoria
+                setTimeout(() => { petalo.remove(); }, 8000);
+            }, 200); // Genera un pétalo nuevo cada 200 milisegundos
+        }
+
+        // === LÓGICA DE SCROLL (REVELAR TEXTOS Y ARMAR RAMO) ===
+        const elementosRevelar = document.querySelectorAll('.texto-revelar');
+        const ramoContenedor = document.getElementById('ramo-contenedor');
+
+        function verificarScroll() {
+            const triggerBottom = window.innerHeight * 0.85; // Se activa cuando el elemento llega al 85% de la pantalla
+
+            elementosRevelar.forEach(elemento => {
+                const elementoTop = elemento.getBoundingClientRect().top;
+                
+                if(elementoTop < triggerBottom) {
+                    elemento.classList.add('visible');
+                    
+                    // Si el elemento es el contenedor del ramo, activamos su animación de ensamblaje
+                    if(elemento.id === 'ramo-contenedor') {
+                        elemento.classList.add('armado');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', verificarScroll);
+        // Verificación inicial por si la pantalla es muy grande
+        verificarScroll(); 
     </script>
 </body>
 </html>
